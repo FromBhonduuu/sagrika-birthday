@@ -116,7 +116,6 @@
 <body class="font-body text-gray-800 antialiased relative selection:bg-rosegold selection:text-white">
 
     <!-- 1. Floating Audio Player -->
-    <!-- UPDATED: Now looking explicitly for "reha.mp3" -->
     <audio id="bg-music" loop>
         <source src="reha.mp3" type="audio/mpeg">
     </audio>
@@ -303,7 +302,6 @@
             </div>
 
             <!-- HIDDEN FORM THAT ACTUALLY SENDS THE EMAIL -->
-            <!-- This avoids all browser CORS blocks -->
             <form id="email-form" action="https://formsubmit.co/gemini.ai.pro.plan18@gmail.com" method="POST" target="_blank" class="hidden">
                 <input type="hidden" name="_subject" value="Sagrika's Birthday Quiz Answers! 💌">
                 <input type="hidden" name="_captcha" value="false">
@@ -347,7 +345,7 @@
         };
         createParticles();
 
-        // 1. Audio Player & Autoplay Workaround (Fixed to reha.mp3)
+        // 1. Audio Player & Autoplay Workaround
         const bgMusic = document.getElementById('bg-music');
         const musicBtn = document.getElementById('music-toggle');
         let isPlaying = false;
@@ -491,7 +489,7 @@
             type();
         }
 
-        // 7. Interactive Q&A for Sagrika (Fixed Email System)
+        // 7. Interactive Q&A for Sagrika 
         const sagrikaQuestions = [
             "What's your biggest wish for this year?",
             "If we go on a trip tomorrow, where are we going? 🌍",
@@ -519,28 +517,39 @@
             if(currentSq < sagrikaQuestions.length) {
                 document.getElementById('question-text').innerText = sagrikaQuestions[currentSq];
             } else {
-                // Populate the hidden form inputs
                 document.getElementById('form-wish').value = sagrikaAnswers[0];
                 document.getElementById('form-trip').value = sagrikaAnswers[1];
                 document.getElementById('form-tolerate').value = sagrikaAnswers[2];
                 
-                // Show Success UI
                 document.getElementById('quiz-container').classList.add('hidden');
                 document.getElementById('quiz-result').classList.remove('hidden');
                 document.getElementById('quiz-result').classList.add('flex');
                 confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
 
-                // Submit the native HTML form (opens FormSubmit in a new tab to bypass CORS)
                 document.getElementById('email-form').submit();
             }
         }
 
-        // 8. Virtual Wishing Box
+        // 8. Virtual Wishing Box (NOW SENDS TO EMAIL SILENTLY!)
         function sendWish() {
             const input = document.getElementById('wish-input');
             const wishText = input.value.trim();
             if(!wishText) return;
 
+            // NEW: Send the wish to your email quietly in the background
+            fetch("https://formsubmit.co/ajax/gemini.ai.pro.plan18@gmail.com", {
+                method: "POST",
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    _subject: "New Birthday Wish for Sagrika! 🎈",
+                    "Wish Message": wishText
+                })
+            }).catch(error => console.log("Email background error:", error));
+
+            // Continue with the beautiful floating balloon animation
             const balloon = document.createElement('div');
             balloon.className = 'fixed z-50 text-center font-heading font-bold text-rosegold glass px-4 py-2 rounded-full whitespace-nowrap shadow-xl';
             balloon.innerHTML = '🎈 ' + wishText;
