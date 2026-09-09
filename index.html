@@ -279,7 +279,7 @@
         </div>
     </section>
 
-    <!-- 7. Questions FOR Sagrika (Sends to Email using Native Form) -->
+    <!-- 7. Questions FOR Sagrika (Silent Email) -->
     <section class="py-20 px-6 max-w-md mx-auto z-10 relative">
         <div class="glass rounded-3xl p-8 text-center border-t border-white shadow-xl">
             <h2 class="font-heading text-2xl font-bold mb-2 text-rosegold">Spill the Tea ☕</h2>
@@ -294,21 +294,12 @@
                 </button>
             </div>
 
-            <!-- Success Message (Shows after clicking submit on last question) -->
+            <!-- Success Message (Shows after clicking submit silently) -->
             <div id="quiz-result" class="hidden flex-col items-center justify-center">
                 <span class="text-5xl mb-4">💌</span>
-                <h3 class="font-heading text-2xl font-bold text-gray-800 mb-2">Check your new tab!</h3>
-                <p class="text-gray-600 mb-4">Your answers have been securely sent.</p>
+                <h3 class="font-heading text-2xl font-bold text-gray-800 mb-2">Sent!</h3>
+                <p class="text-gray-600 mb-4">Your answers have been safely delivered to Bhonduuu.</p>
             </div>
-
-            <!-- HIDDEN FORM THAT ACTUALLY SENDS THE EMAIL -->
-            <form id="email-form" action="https://formsubmit.co/gemini.ai.pro.plan18@gmail.com" method="POST" target="_blank" class="hidden">
-                <input type="hidden" name="_subject" value="Sagrika's Birthday Quiz Answers! 💌">
-                <input type="hidden" name="_captcha" value="false">
-                <input type="hidden" name="Wish" id="form-wish">
-                <input type="hidden" name="Trip Idea" id="form-trip">
-                <input type="hidden" name="Tolerates" id="form-tolerate">
-            </form>
         </div>
     </section>
 
@@ -489,7 +480,7 @@
             type();
         }
 
-        // 7. Interactive Q&A for Sagrika 
+        // 7. Interactive Q&A for Sagrika (Completely Silent Email)
         const sagrikaQuestions = [
             "What's your biggest wish for this year?",
             "If we go on a trip tomorrow, where are we going? 🌍",
@@ -513,30 +504,41 @@
             inputEl.value = '';
             currentSq++;
 
-            // Load next question or trigger HTML form submission
+            // Load next question or trigger SILENT email submission
             if(currentSq < sagrikaQuestions.length) {
                 document.getElementById('question-text').innerText = sagrikaQuestions[currentSq];
             } else {
-                document.getElementById('form-wish').value = sagrikaAnswers[0];
-                document.getElementById('form-trip').value = sagrikaAnswers[1];
-                document.getElementById('form-tolerate').value = sagrikaAnswers[2];
-                
+                // Show Success UI immediately
                 document.getElementById('quiz-container').classList.add('hidden');
                 document.getElementById('quiz-result').classList.remove('hidden');
                 document.getElementById('quiz-result').classList.add('flex');
                 confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
 
-                document.getElementById('email-form').submit();
+                // Send silently in the background
+                fetch("https://formsubmit.co/ajax/gemini.ai.pro.plan18@gmail.com", {
+                    method: "POST",
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        _subject: "Sagrika's Birthday Quiz Answers! 💌",
+                        _captcha: "false", // Forces it to skip the captcha block
+                        "Wish": sagrikaAnswers[0],
+                        "Trip Idea": sagrikaAnswers[1],
+                        "Tolerates": sagrikaAnswers[2]
+                    })
+                }).catch(error => console.log("Silent email error:", error));
             }
         }
 
-        // 8. Virtual Wishing Box (NOW SENDS TO EMAIL SILENTLY!)
+        // 8. Virtual Wishing Box (Completely Silent Email)
         function sendWish() {
             const input = document.getElementById('wish-input');
             const wishText = input.value.trim();
             if(!wishText) return;
 
-            // NEW: Send the wish to your email quietly in the background
+            // Send silently in the background
             fetch("https://formsubmit.co/ajax/gemini.ai.pro.plan18@gmail.com", {
                 method: "POST",
                 headers: { 
@@ -545,9 +547,10 @@
                 },
                 body: JSON.stringify({
                     _subject: "New Birthday Wish for Sagrika! 🎈",
+                    _captcha: "false", // Forces it to skip the captcha block
                     "Wish Message": wishText
                 })
-            }).catch(error => console.log("Email background error:", error));
+            }).catch(error => console.log("Silent wish email error:", error));
 
             // Continue with the beautiful floating balloon animation
             const balloon = document.createElement('div');
