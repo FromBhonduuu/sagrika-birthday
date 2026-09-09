@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Sagrika! ✨</title>
+    
+    <!-- Fonts: Playfair Display for headings, Poppins for text, Caveat for handwriting -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (CDN for easy setup) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        blush: '#FFD1DC',
+                        lavender: '#E6E6FA',
+                        cream: '#FFFDD0',
+                        rosegold: '#B76E79'
+                    },
+                    fontFamily: {
+                        heading: ['Playfair Display', 'serif'],
+                        body: ['Poppins', 'sans-serif'],
+                        handwriting: ['Caveat', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Canvas Confetti & Lucide Icons -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Base & Scrollbar */
+        body {
+            background: linear-gradient(135deg, #FFD1DC 0%, #E6E6FA 50%, #FFFDD0 100%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: #B76E79; border-radius: 4px; }
+
+        /* Glassmorphism Utilities */
+        .glass {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(183, 110, 121, 0.15);
+        }
+
+        /* Floating Particles */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            animation: floatUp linear infinite;
+            z-index: 0;
+            opacity: 0.6;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            20% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+
+        /* Flip Cards */
+        .perspective { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; transition: transform 0.6s; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+        .flip-card.flipped .transform-style-3d { transform: rotateY(180deg); }
+
+        /* Candle Flame Animation */
+        .flame {
+            animation: flicker 0.5s infinite alternate;
+            transform-origin: bottom;
+        }
+        @keyframes flicker {
+            0% { transform: scaleY(1) rotate(-2deg); opacity: 0.9; }
+            100% { transform: scaleY(1.1) rotate(2deg); opacity: 1; }
+        }
+
+        /* Hero Card Animation */
+        #envelope-wrapper { height: 18rem; }
+        #envelope { transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+        .open-envelope #envelope { 
+            transform: translateY(-80px) scale(0.9); 
+            opacity: 0; 
+            pointer-events: none; 
+        }
+        .open-envelope #card-inside { 
+            transform: translateY(0); 
+            opacity: 1; 
+            z-index: 10; 
+        }
+        
+        /* Quiz Shake */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        .animate-shake { animation: shake 0.4s ease-in-out; }
+
+        /* Notepad Letter lines */
+        .notepad {
+            background-image: repeating-linear-gradient(transparent, transparent 31px, rgba(183,110,121,0.2) 31px, rgba(183,110,121,0.2) 32px);
+            line-height: 32px;
+        }
+    </style>
+</head>
+<body class="font-body text-gray-800 antialiased relative selection:bg-rosegold selection:text-white">
+
+    <!-- 1. Floating Audio Player -->
+    <!-- UPDATED: Now looking explicitly for "reha.mp3" -->
+    <audio id="bg-music" loop>
+        <source src="reha.mp3" type="audio/mpeg">
+    </audio>
+    <button id="music-toggle" class="fixed top-4 right-4 z-50 p-3 rounded-full glass hover:scale-110 transition-transform shadow-lg text-rosegold bg-white/60">
+        <i data-lucide="music"></i>
+    </button>
+
+    <!-- 2. Hero Section (Card & Counter) -->
+    <section class="min-h-screen flex flex-col items-center justify-center p-4 relative z-10">
+        
+        <div id="envelope-wrapper" class="relative w-80 mt-10">
+            <!-- Front Card -->
+            <div id="envelope" class="absolute inset-0 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl flex flex-col items-center justify-center p-6 z-20 hover:shadow-2xl">
+                <img src="1.jpg" alt="Sagrika" class="w-32 h-40 object-cover rounded-md mb-6 shadow-sm border border-gray-100">
+                <span class="font-heading text-3xl text-rosegold font-bold">For Sagrika 💖</span>
+            </div>
+            
+            <!-- Hidden Inside Card that appears on click -->
+            <div id="card-inside" class="absolute inset-0 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl flex flex-col items-center justify-center p-6 opacity-0 translate-y-10 transition-all duration-700 pointer-events-none">
+                <h1 class="font-heading text-4xl font-bold text-center bg-gradient-to-r from-rosegold to-purple-500 bg-clip-text text-transparent mb-2">Happy Birthday!</h1>
+                <p class="font-handwriting text-2xl text-gray-600 text-center mt-2">To the most amazing sister ✨</p>
+            </div>
+        </div>
+        
+        <!-- Days of Sunshine Counter -->
+        <div class="mt-12 flex flex-col items-center">
+            <p class="text-xs uppercase tracking-[0.2em] text-rosegold font-bold mb-3">Days of Sunshine</p>
+            <div class="bg-white/90 backdrop-blur-md px-10 py-4 rounded-[2rem] shadow-sm flex items-center gap-8">
+                <div class="text-center">
+                    <span id="days-count" class="block font-heading text-4xl font-bold text-gray-900">0</span>
+                    <span class="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Days</span>
+                </div>
+                <div class="text-3xl text-rosegold font-bold mb-4">:</div>
+                <div class="text-center">
+                    <span id="hours-count" class="block font-heading text-4xl font-bold text-gray-900">0</span>
+                    <span class="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Hours</span>
+                </div>
+            </div>
+            <p class="mt-6 text-xs text-gray-500 animate-pulse font-medium">Tap the envelope!</p>
+        </div>
+    </section>
+
+    <!-- 3. Polaroid Photo Gallery -->
+    <section class="py-20 px-6 max-w-5xl mx-auto z-10 relative">
+        <h2 class="font-heading text-4xl text-center font-bold mb-12 text-rosegold">Memory Lane 📸</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Polaroid 1 -->
+            <div class="bg-white p-4 pb-12 shadow-xl rounded-sm transform rotate-[-2deg] hover:rotate-0 hover:scale-105 transition-all duration-300 cursor-pointer relative" onclick="openModal('2.jpg', 'That time we couldn\'t stop laughing 😂')">
+                <div class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 w-12 h-4 bg-white/50 shadow-sm tape rotate-[-3deg]"></div>
+                <img src="2.jpg" alt="Memory 1" class="w-full h-80 object-cover mb-4 rounded-sm border border-gray-100">
+                <p class="font-handwriting text-2xl text-center absolute bottom-3 w-full left-0">Partner in crime</p>
+            </div>
+            <!-- Polaroid 2 -->
+            <div class="bg-white p-4 pb-12 shadow-xl rounded-sm transform rotate-[3deg] hover:rotate-0 hover:scale-105 transition-all duration-300 cursor-pointer relative mt-4 md:mt-0" onclick="openModal('3.jpg', 'Looking fabulous as always ✨')">
+                <div class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 w-12 h-4 bg-white/50 shadow-sm tape rotate-[2deg]"></div>
+                <img src="3.jpg" alt="Memory 2" class="w-full h-80 object-cover mb-4 rounded-sm border border-gray-100">
+                <p class="font-handwriting text-2xl text-center absolute bottom-3 w-full left-0">Slaying everyday</p>
+            </div>
+            <!-- Polaroid 3 -->
+            <div class="bg-white p-4 pb-12 shadow-xl rounded-sm transform rotate-[-1deg] hover:rotate-0 hover:scale-105 transition-all duration-300 cursor-pointer relative mt-4 md:mt-0" onclick="openModal('4.jpg', 'Best travel buddy forever 🌍')">
+                <div class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 w-12 h-4 bg-white/50 shadow-sm tape rotate-[-1deg]"></div>
+                <img src="4.jpg" alt="Memory 3" class="w-full h-80 object-cover mb-4 rounded-sm border border-gray-100">
+                <p class="font-handwriting text-2xl text-center absolute bottom-3 w-full left-0">Adventures</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal for Polaroids -->
+    <div id="photo-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300" onclick="closeModal()">
+        <div class="bg-white p-4 pb-16 rounded-sm shadow-2xl max-w-md w-full relative transform scale-95 transition-transform duration-300" id="modal-content" onclick="event.stopPropagation()">
+            <button onclick="closeModal()" class="absolute -top-12 right-0 text-white hover:text-rosegold"><i data-lucide="x-circle" class="w-8 h-8"></i></button>
+            <img id="modal-img" src="" class="w-full h-auto max-h-[60vh] object-contain rounded">
+            <p id="modal-text" class="font-handwriting text-3xl text-center mt-6 text-gray-800"></p>
+        </div>
+    </div>
+
+    <!-- 4. Reasons Why... Flip Cards -->
+    <section class="py-20 px-6 relative z-10 glass mx-4 md:mx-auto max-w-5xl rounded-3xl my-10">
+        <h2 class="font-heading text-3xl text-center font-bold mb-10 text-gray-800">Why Sagrika is the Best 👑</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+            
+            <!-- Best Advisor -->
+            <div class="flip-card perspective h-40 cursor-pointer group" onclick="this.classList.toggle('flipped')">
+                <div class="transform-style-3d w-full h-full relative rounded-xl shadow-md">
+                    <div class="absolute w-full h-full bg-white/70 backdrop-blur-sm rounded-xl flex flex-col items-center justify-center backface-hidden border border-white">
+                        <span class="text-4xl mb-2">💡</span>
+                        <h3 class="font-heading font-bold text-sm text-center">Best Advisor</h3>
+                    </div>
+                    <div class="absolute w-full h-full bg-rosegold text-white rounded-xl flex items-center justify-center text-center p-4 backface-hidden rotate-y-180">
+                        <p class="font-handwriting text-xl text-cream">Always knowing exactly what to say and giving the absolute best advice!</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Chief Shopping Officer -->
+            <div class="flip-card perspective h-40 cursor-pointer" onclick="this.classList.toggle('flipped')">
+                <div class="transform-style-3d w-full h-full relative rounded-xl shadow-md">
+                    <div class="absolute w-full h-full bg-white/70 backdrop-blur-sm rounded-xl flex flex-col items-center justify-center backface-hidden border border-white">
+                        <span class="text-4xl mb-2">🛍️</span>
+                        <h3 class="font-heading font-bold text-sm text-center">Chief Shopping Officer</h3>
+                    </div>
+                    <div class="absolute w-full h-full bg-rosegold text-white rounded-xl flex items-center justify-center text-center p-4 backface-hidden rotate-y-180">
+                        <p class="font-handwriting text-xl text-cream">My personal stylist and closet raider.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Best Secret Keeper -->
+            <div class="flip-card perspective h-40 cursor-pointer" onclick="this.classList.toggle('flipped')">
+                <div class="transform-style-3d w-full h-full relative rounded-xl shadow-md">
+                    <div class="absolute w-full h-full bg-white/70 backdrop-blur-sm rounded-xl flex flex-col items-center justify-center backface-hidden border border-white">
+                        <span class="text-4xl mb-2">🤫</span>
+                        <h3 class="font-heading font-bold text-sm text-center">Best Secret Keeper</h3>
+                    </div>
+                    <div class="absolute w-full h-full bg-rosegold text-white rounded-xl flex items-center justify-center text-center p-4 backface-hidden rotate-y-180">
+                        <p class="font-handwriting text-xl text-cream">A vault that takes bribes in iced coffee.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-xs text-gray-500 mt-6">(Tap to flip!)</p>
+    </section>
+
+    <!-- 5. Birthday Cake & Candle -->
+    <section class="py-20 flex flex-col items-center justify-center relative z-10">
+        <h2 class="font-heading text-4xl font-bold mb-10 text-rosegold text-center">Make a Wish! 🎂</h2>
+        <div class="relative cursor-pointer group" onclick="blowCandle()" id="cake-container">
+            <svg width="200" height="200" viewBox="0 0 200 200" class="hover:scale-105 transition-transform">
+                <ellipse cx="100" cy="180" rx="90" ry="15" fill="#e2e8f0" />
+                <rect x="30" y="100" width="140" height="80" rx="10" fill="#FFB6C1" />
+                <path d="M 30 100 Q 40 120 50 100 Q 60 120 70 100 Q 80 120 90 100 Q 100 120 110 100 Q 120 120 130 100 Q 140 120 150 100 Q 160 120 170 100 L 170 100 L 170 110 L 30 110 Z" fill="#FFFDD0" />
+                <rect x="95" y="60" width="10" height="40" fill="#E6E6FA" stroke="#ccc" stroke-width="1"/>
+                <line x1="95" y1="70" x2="105" y2="80" stroke="#B76E79" stroke-width="2"/>
+                <line x1="95" y1="80" x2="105" y2="90" stroke="#B76E79" stroke-width="2"/>
+            </svg>
+            <div id="flame" class="absolute top-[35px] left-[93px] flame">
+                <svg width="15" height="25" viewBox="0 0 15 25">
+                    <path d="M 7.5 0 C 7.5 0 0 10 0 15 C 0 20 4 25 7.5 25 C 11 25 15 20 15 15 C 15 10 7.5 0 7.5 0 Z" fill="#FFA500"/>
+                    <path d="M 7.5 5 C 7.5 5 3 12 3 16 C 3 19 5.5 22 7.5 22 C 9.5 22 12 19 12 16 C 12 12 7.5 5 7.5 5 Z" fill="#FF4500"/>
+                </svg>
+            </div>
+        </div>
+        <p class="mt-8 text-gray-600 font-medium bg-white/70 px-6 py-2 rounded-full backdrop-blur shadow-sm animate-bounce" id="blow-text">Tap the candle to blow it out!</p>
+    </section>
+
+    <!-- 6. Secret Letter -->
+    <section class="py-10 px-6 max-w-2xl mx-auto z-10 relative">
+        <div class="glass p-8 md:p-12 rounded-lg shadow-xl relative overflow-hidden bg-[#fafafa]">
+            <div class="absolute top-4 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-300 rounded-full shadow-inner border border-gray-400"></div>
+            <h2 class="font-heading text-2xl font-bold mb-6 text-rosegold border-b-2 border-rosegold/30 pb-2">A Secret Letter 💌</h2>
+            <div class="notepad min-h-[300px] text-gray-700 font-handwriting text-2xl">
+                <p id="typewriter-text" class="opacity-0">
+                    Dear Sagrika, <br><br>
+                    Happy Birthday! I just wanted to remind you how incredibly special you are. From our late-night gossips to funny battles, every memory with you is a treasure. <br><br>
+                    May this year bring you all the aesthetic iced coffees, perfect outfits, and success you deserve. Keep shining, drama queen. ✨<br><br>
+                    Love always,<br>
+                    Your Bhonduuu 💖
+                </p>
+            </div>
+            <button id="reveal-letter-btn" onclick="typeLetter()" class="mt-6 w-full py-3 bg-rosegold text-white font-medium rounded-lg hover:bg-pink-700 transition shadow-lg">Read Letter</button>
+        </div>
+    </section>
+
+    <!-- 7. Questions FOR Sagrika (Sends to Email using Native Form) -->
+    <section class="py-20 px-6 max-w-md mx-auto z-10 relative">
+        <div class="glass rounded-3xl p-8 text-center border-t border-white shadow-xl">
+            <h2 class="font-heading text-2xl font-bold mb-2 text-rosegold">Spill the Tea ☕</h2>
+            <p class="text-sm text-gray-500 mb-6">A few birthday questions just for you!</p>
+            
+            <!-- Question UI -->
+            <div id="quiz-container">
+                <h3 id="question-text" class="font-medium text-lg mb-4 h-14">What's your biggest wish for this year?</h3>
+                <textarea id="answer-input" class="w-full px-4 py-3 rounded-xl border border-pink-200 focus:outline-none focus:ring-2 focus:ring-rosegold bg-white/70 shadow-sm font-body text-sm resize-none mb-4" rows="3" placeholder="Type your answer here..."></textarea>
+                <button onclick="nextQuestion()" class="w-full py-3 bg-rosegold text-white font-medium rounded-xl hover:bg-pink-700 transition shadow-lg">
+                    Next Question
+                </button>
+            </div>
+
+            <!-- Success Message (Shows after clicking submit on last question) -->
+            <div id="quiz-result" class="hidden flex-col items-center justify-center">
+                <span class="text-5xl mb-4">💌</span>
+                <h3 class="font-heading text-2xl font-bold text-gray-800 mb-2">Check your new tab!</h3>
+                <p class="text-gray-600 mb-4">Your answers have been securely sent.</p>
+            </div>
+
+            <!-- HIDDEN FORM THAT ACTUALLY SENDS THE EMAIL -->
+            <!-- This avoids all browser CORS blocks -->
+            <form id="email-form" action="https://formsubmit.co/gemini.ai.pro.plan18@gmail.com" method="POST" target="_blank" class="hidden">
+                <input type="hidden" name="_subject" value="Sagrika's Birthday Quiz Answers! 💌">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="Wish" id="form-wish">
+                <input type="hidden" name="Trip Idea" id="form-trip">
+                <input type="hidden" name="Tolerates" id="form-tolerate">
+            </form>
+        </div>
+    </section>
+
+    <!-- 8. Virtual Wishing Box -->
+    <section class="py-16 px-6 bg-white/40 backdrop-blur-md border-t border-white/60 relative z-10 mt-10">
+        <div class="max-w-lg mx-auto text-center">
+            <h2 class="font-heading text-2xl font-bold text-gray-800 mb-4">Send a Birthday Wish 🎈</h2>
+            <div class="flex gap-2">
+                <input type="text" id="wish-input" placeholder="Type your wish..." class="w-full px-4 py-3 rounded-full border border-pink-200 focus:outline-none focus:ring-2 focus:ring-rosegold bg-white/70 shadow-sm font-body text-sm" onkeypress="if(event.key === 'Enter') sendWish()">
+                <button onclick="sendWish()" class="px-6 py-3 bg-rosegold text-white rounded-full font-medium shadow-lg hover:bg-pink-700 transition flex items-center gap-2">
+                    <i data-lucide="send" class="w-4 h-4"></i> Send
+                </button>
+            </div>
+            <p class="text-xs text-gray-500 mt-3">Watch it float up to the sky!</p>
+        </div>
+    </section>
+
+    <!-- JS LOGIC -->
+    <script>
+        lucide.createIcons();
+
+        // Background Particles
+        const createParticles = () => {
+            const symbols = ['✨', '💖', '🌸', '🎈'];
+            for(let i = 0; i < 15; i++) {
+                let p = document.createElement('div');
+                p.className = 'particle text-2xl';
+                p.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                p.style.animationDelay = Math.random() * 5 + 's';
+                document.body.appendChild(p);
+            }
+        };
+        createParticles();
+
+        // 1. Audio Player & Autoplay Workaround (Fixed to reha.mp3)
+        const bgMusic = document.getElementById('bg-music');
+        const musicBtn = document.getElementById('music-toggle');
+        let isPlaying = false;
+        
+        function playMusic() {
+            if(!isPlaying) {
+                bgMusic.play().then(() => {
+                    isPlaying = true;
+                    musicBtn.innerHTML = '<i data-lucide="pause"></i>';
+                    lucide.createIcons();
+                }).catch(e => {
+                    console.log("Audio block/error. Please ensure the audio file is named EXACTLY 'reha.mp3' and is in the same folder.");
+                });
+            }
+        }
+
+        function toggleMusic(e) {
+            e.stopPropagation();
+            if(isPlaying) {
+                bgMusic.pause();
+                musicBtn.innerHTML = '<i data-lucide="music"></i>';
+                isPlaying = false;
+            } else {
+                playMusic();
+            }
+            lucide.createIcons();
+        }
+
+        musicBtn.addEventListener('click', toggleMusic);
+
+        // Click anywhere to start music
+        document.body.addEventListener('click', () => {
+            playMusic();
+        }, { once: true }); 
+
+        // 2. Hero Card & Confetti
+        const envelope = document.getElementById('envelope');
+        envelope.addEventListener('click', () => {
+            document.getElementById('envelope-wrapper').classList.add('open-envelope');
+            setTimeout(() => {
+                confetti({
+                    particleCount: 150,
+                    spread: 80,
+                    origin: { y: 0.6 },
+                    colors: ['#FFD1DC', '#E6E6FA', '#FFFDD0', '#B76E79']
+                });
+                document.getElementById('card-inside').style.pointerEvents = "auto";
+            }, 400);
+        });
+
+        // Counter Logic 
+        const birthDate = new Date('2010-09-10T00:00:00').getTime();
+        setInterval(() => {
+            const now = new Date().getTime();
+            const distance = now - birthDate;
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            document.getElementById('days-count').innerText = days;
+            document.getElementById('hours-count').innerText = hours;
+        }, 1000);
+
+        // 3. Polaroid Modal
+        const modal = document.getElementById('photo-modal');
+        const modalImg = document.getElementById('modal-img');
+        const modalText = document.getElementById('modal-text');
+        const modalContent = document.getElementById('modal-content');
+
+        function openModal(src, text) {
+            modalImg.src = src;
+            modalText.innerText = text;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            modal.classList.add('opacity-0');
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        // 5. Candle Blow Out
+        let candleBlown = false;
+        function blowCandle() {
+            if(candleBlown) return;
+            candleBlown = true;
+            document.getElementById('flame').style.display = 'none';
+            document.getElementById('blow-text').innerText = "Yay! Happy Birthday!";
+            document.getElementById('blow-text').classList.remove('animate-bounce');
+            
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) { return clearInterval(interval); }
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount,
+                    origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+                    colors: ['#FFD1DC', '#B76E79']
+                }));
+                confetti(Object.assign({}, defaults, { particleCount,
+                    origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+                    colors: ['#E6E6FA', '#FFFDD0']
+                }));
+            }, 250);
+        }
+
+        // 6. Typewriter Effect
+        function typeLetter() {
+            const btn = document.getElementById('reveal-letter-btn');
+            btn.style.display = 'none';
+            const textEl = document.getElementById('typewriter-text');
+            const fullHTML = textEl.innerHTML;
+            textEl.innerHTML = '';
+            textEl.classList.remove('opacity-0');
+            
+            let i = 0;
+            let isTag = false;
+            let text = '';
+            function type() {
+                if (i < fullHTML.length) {
+                    let char = fullHTML.charAt(i);
+                    text += char;
+                    textEl.innerHTML = text;
+                    if (char === '<') isTag = true;
+                    if (char === '>') isTag = false;
+                    i++;
+                    setTimeout(type, isTag ? 0 : 30);
+                }
+            }
+            type();
+        }
+
+        // 7. Interactive Q&A for Sagrika (Fixed Email System)
+        const sagrikaQuestions = [
+            "What's your biggest wish for this year?",
+            "If we go on a trip tomorrow, where are we going? 🌍",
+            "What is one thing you actually tolerate about me? 😂"
+        ];
+        let currentSq = 0;
+        let sagrikaAnswers = [];
+
+        function nextQuestion() {
+            const inputEl = document.getElementById('answer-input');
+            const answer = inputEl.value.trim();
+            
+            if(!answer) {
+                inputEl.classList.add('animate-shake', 'border-red-400');
+                setTimeout(() => inputEl.classList.remove('animate-shake', 'border-red-400'), 500);
+                return;
+            }
+
+            // Save answer locally first
+            sagrikaAnswers.push(answer);
+            inputEl.value = '';
+            currentSq++;
+
+            // Load next question or trigger HTML form submission
+            if(currentSq < sagrikaQuestions.length) {
+                document.getElementById('question-text').innerText = sagrikaQuestions[currentSq];
+            } else {
+                // Populate the hidden form inputs
+                document.getElementById('form-wish').value = sagrikaAnswers[0];
+                document.getElementById('form-trip').value = sagrikaAnswers[1];
+                document.getElementById('form-tolerate').value = sagrikaAnswers[2];
+                
+                // Show Success UI
+                document.getElementById('quiz-container').classList.add('hidden');
+                document.getElementById('quiz-result').classList.remove('hidden');
+                document.getElementById('quiz-result').classList.add('flex');
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+
+                // Submit the native HTML form (opens FormSubmit in a new tab to bypass CORS)
+                document.getElementById('email-form').submit();
+            }
+        }
+
+        // 8. Virtual Wishing Box
+        function sendWish() {
+            const input = document.getElementById('wish-input');
+            const wishText = input.value.trim();
+            if(!wishText) return;
+
+            const balloon = document.createElement('div');
+            balloon.className = 'fixed z-50 text-center font-heading font-bold text-rosegold glass px-4 py-2 rounded-full whitespace-nowrap shadow-xl';
+            balloon.innerHTML = '🎈 ' + wishText;
+            balloon.style.left = (Math.random() * 60 + 20) + 'vw';
+            balloon.style.bottom = '-50px';
+            balloon.style.transition = 'all 4s ease-in';
+            
+            document.body.appendChild(balloon);
+            input.value = '';
+
+            setTimeout(() => {
+                balloon.style.bottom = '120vh';
+                balloon.style.opacity = '0';
+            }, 100);
+
+            setTimeout(() => {
+                balloon.remove();
+            }, 4500);
+        }
+    </script>
+</body>
+</html>
